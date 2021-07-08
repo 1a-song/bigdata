@@ -1,0 +1,21 @@
+import re
+import pandas as pd
+
+#로그의 각 행에 매치하는 정규 표현
+pattern = re.compile('^\S+ \S+ \S \[(.*_\] "(.*)" (\S+) (\S+)$')
+
+#정규 표현으로 파싱하는 함수 선언 (미일치행은 버림)
+def pars_access_log(path):
+  for line in open(path):
+    for m in pattern.finditer(line):
+      yield m.groups()
+      
+#로그파일을 데이터프레임으로 변환
+columns = ['time', 'request', 'status', 'bytes']
+df = pd.DataFrame(parse_access_log('access.log'), columns=columns)
+
+#시간을 인덱스로 지정
+df_t = df.set_index('time')
+
+#일일 액세스 수 카운트
+df_t.resample('1d').size()
