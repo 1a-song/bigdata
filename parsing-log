@@ -14,8 +14,14 @@ def pars_access_log(path):
 columns = ['time', 'request', 'status', 'bytes']
 df = pd.DataFrame(parse_access_log('access.log'), columns=columns)
 
+df.time = pd.to_datetime(df.time, format='%d/%b/%Y:%X', exact=False)
+df.to_csv('access_log.csv', index=False, encoding='cp949')
+
+
+df1 = pd.read_csv('access_log.csv', parse_dates=['time'])
+
 #시간을 인덱스로 지정
-df_t = df.set_index('time')
+df_t = df1.set_index('time')
 
 #일일 액세스 수 카운트
 df_t.resample('1d').size()
