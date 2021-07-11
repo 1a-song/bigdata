@@ -12,3 +12,17 @@ FROM (
 ) a
 JOIN users b ON b.id = a.user_id
 WHERE b.created_at = '2017-01-01'
+
+
+#distinct count는 분산되지 않는다
+SELECT date, count(distinct user_id) users
+FROM access_log GROUP BY date
+
+#더 효율적인 쿼리 예
+
+SELECT date, count(*) users
+FROM (
+#최초에 중복 제거
+  SELECT DISTINCT date, user_id FROM access_log
+) t
+GROUP BY date
