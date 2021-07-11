@@ -1,0 +1,14 @@
+SELECT ...
+FROM access_log a
+Join uesrs b ON b.id = a.user_id
+WHERE b.created_at = '2017-01-01'
+
+#더 효율적인 쿼리 예
+
+SELECT ...
+FROM (
+  SELECT * access_log
+  WHERE time >= TIMESTAMP '2017-01-01 00:00:00'
+) a
+JOIN users b ON b.id = a.user_id
+WHERE b.created_at = '2017-01-01'
